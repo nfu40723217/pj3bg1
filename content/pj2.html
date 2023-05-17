@@ -2,7 +2,7 @@
         <head>
         <title>2b3-pj3bg1</title>
         <meta charset="utf-8">
-<meta property="head" content="H2">
+<meta property="head" content="H1">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700,900" rel="stylesheet">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
@@ -141,22 +141,205 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">40923225-w9 << <a href='40923225-w9.html'>Previous</a> <a href='w10.html'>Next</a> >> w10<br /><h1>40923246-w9</h1>
-<p>今天交給我們的新模擬，用兩個py控制兩台車</p>
-<p>控制紅色那台可以正常運作</p>
-<p><img alt="" height="464" src="./../images/W9-R.png" width="526"/></p>
-<p>但我控制綠色那台時一直跑出 找不到__main__</p>
-<p><img alt="" height="414" src="./../images/W9-G.png" width="532"/></p>
-<p>問chatgpt 都是回python路徑問題</p>
-<p><img alt="" height="358" src="./../images/W9-gpt.png" width="525"/></p>
-<p>嘗試用了討論區的解法，也是一樣找不到__main__</p>
-<p><img alt="" height="384" src="./../images/W9-17.png" width="529"/></p>
-<p><img alt="" height="737" src="./../images/W9-scite.png" width="545"/></p>
-<p>但使用python開啟則可以運作</p>
-<p><img alt="" height="296" src="./../images/W9-py-1.png" width="548"/></p>
-<p><img alt="" height="301" src="./../images/W9-py-2.png" width="735"/></p>
-<p><img alt="" height="338" src="./../images/W9-py-3.png" width="599"/></p>
-<br />40923225-w9 << <a href='40923225-w9.html'>Previous</a> <a href='w10.html'>Next</a> >> w10</div>
+    <div id="tipue_search_content">About << <a href='About.html'>Previous</a> <a href='補充.html'>Next</a> >> 補充<br /><h1>pj2</h1>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" src="https://www.youtube.com/embed/4IurfQP8U1Q" title="YouTube video player" width="560"></iframe></p>
+<p><a href="./../downloads/zmq_bubbleRob_red_green_board.ttt">瀏覽器中計分板設計.ttt檔</a></p>
+<hr/>
+<p>分工情況:</p>
+<p>40723217：<span>虛擬主機連線，</span>進球、位置重置程式設計</p>
+<p>40923219：記分板程式修改、影片，<span>報告</span></p>
+<p>40923225：場景球場繪製，虛擬主機連線，報告</p>
+<p>40923246：場景記分板繪製﹐記分板程式設計</p>
+<p>場景</p>
+<p>在solidworks繪製</p>
+<p><img alt="" height="326" src="./../images/W13-場景.png" width="660"/></p>
+<p><a href="./../downloads/01111.STL">場景.STL檔</a></p>
+<p>記分板</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" src="https://www.youtube.com/embed/mhgDF8kXEXE" title="YouTube video player" width="560"></iframe></p>
+<p>使用<strong>CoppeliaSim</strong>繪製記分板</p>
+<p><img alt="" height="309" src="./../images/W13-記分板尺寸.png" width="561"/></p>
+<p><span><a href="./../downloads/board_test.ttt">記分板.ttt檔</a></span></p>
+<p><span>程式</span></p>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">function sysCall_init()
+bubbleRob1 = sim.getObject('./bubbleRob1')
+bubbleRob2 = sim.getObject('./bubbleRob2')
+sensor = sim.getObject('./sensor')
+sensor2 = sim.getObject('./sensor2')
+ball = sim.getObject('./ball')
+
+pos1 = {-1,0,0.15}
+pos2 = {1,0,0.15}
+posS = {0,0,0.15}
+ang1 = {0,0,0}
+ang2 = {0,0,3.14}
+bubbleRobBase = 4
+initialBubbleRobPosition = sim.getObjectPosition(bubbleRobBase, -1)
+initialBubbleRobOrientation = sim.getObjectOrientation(bubbleRobBase, -1)
+initialballPosition = sim.getObjectPosition(ball, -1)
+initialballOrientation = sim.getObjectOrientation(ball, -1)
+
+count = 14400
+score1 = 0
+score2 = 0
+score3 = 0
+score4 = 0
+
+s0={1,1,1,1,1,0,1}
+s1={0,0,1,1,0,0,0}
+s2={0,1,1,0,1,1,1}
+s3={0,0,1,1,1,1,1}
+s4={1,0,1,1,0,1,0}
+s5={1,0,0,1,1,1,1}
+s6={1,1,0,1,1,1,1}
+s7={0,0,1,1,1,0,0}
+s8={1,1,1,1,1,1,1}
+s9={1,0,1,1,1,1,1}
+s={s0,s1,s2,s3,s4,s5,s6,s7,s8,s9}
+for j = 0,6,1 do
+a = sim.getObject('./_G['..j..']')
+if (s[1][j+1]==1) then
+sim.setShapeColor(a, nil, sim.colorcomponent_ambient_diffuse, {1, 0, 0})
+else
+sim.setShapeColor(a, nil, sim.colorcomponent_ambient_diffuse, {1, 1, 1})
+end
+end
+for j = 0,6,1 do
+b = sim.getObject('./G_['..j..']')
+if (s[1][j+1]==1) then
+sim.setShapeColor(b, nil, sim.colorcomponent_ambient_diffuse, {1, 0, 0})
+else
+sim.setShapeColor(b, nil, sim.colorcomponent_ambient_diffuse, {1, 1, 1})
+end
+end
+for j = 0,6,1 do
+d = sim.getObject('./_R['..j..']')
+if (s[1][j+1]==1) then
+sim.setShapeColor(d, nil, sim.colorcomponent_ambient_diffuse, {0, 1, 0})
+else
+sim.setShapeColor(d, nil, sim.colorcomponent_ambient_diffuse, {1, 1, 1})
+end
+end
+for j = 0,6,1 do
+c = sim.getObject('./R_['..j..']')
+if (s[1][j+1]==1) then
+sim.setShapeColor(c, nil, sim.colorcomponent_ambient_diffuse, {0, 1, 0})
+else
+sim.setShapeColor(c, nil, sim.colorcomponent_ambient_diffuse, {1, 1, 1})
+end
+end
+end
+function sysCall_actuation()
+result = sim.readProximitySensor(sensor)
+print(s[i])
+if(result&gt;0)then
+sim.setObjectPosition(ball, -1, initialballPosition)
+sim.setObjectOrientation(ball, -1, initialballOrientation)
+sim.setObjectPosition(bubbleRob1, -1, pos1)
+sim.setObjectPosition(bubbleRob2, -1, pos2)
+sim.setObjectOrientation(bubbleRob1, -1, ang1)
+sim.setObjectOrientation(bubbleRob2, -1, ang2)
+score1 = score1 + 1
+if (score1 &lt;= 9) then
+i = score1 +1
+
+for j = 0, 6, 1 do
+a = sim.getObject('./_G['..j..']')
+if (s[i][j+1] == 1) then
+sim.setShapeColor(a, nil, sim.colorcomponent_ambient_diffuse, {1, 0, 0})
+else
+sim.setShapeColor(a, nil, sim.colorcomponent_ambient_diffuse, {1, 1, 1})
+end
+end
+
+
+elseif (score1 &gt; 9 and score2&lt;=9) then
+score1 = 0
+for j = 0, 6, 1 do
+a = sim.getObject('./_G['..j..']')
+if (s[1][j+1] == 1) then
+sim.setShapeColor(a, nil, sim.colorcomponent_ambient_diffuse, {1, 0, 0})
+else
+sim.setShapeColor(a, nil, sim.colorcomponent_ambient_diffuse, {1, 1, 1})
+end
+end
+
+score2 = score2 + 1
+i = score2 +1
+
+for j = 0, 6, 1 do
+b = sim.getObject('./G_['..j..']')
+if (s[i][j+1] == 1) then
+sim.setShapeColor(b, nil, sim.colorcomponent_ambient_diffuse, {1, 0, 0})
+else
+sim.setShapeColor(b, nil, sim.colorcomponent_ambient_diffuse, {1, 1, 1})
+end
+end
+
+
+else
+sim.pauseSimulation()
+end
+end
+result2 = sim.readProximitySensor(sensor2)
+if(result2&gt;0)then
+sim.setObjectPosition(ball, -1, initialballPosition)
+sim.setObjectOrientation(ball, -1, initialballOrientation)
+sim.setObjectPosition(bubbleRob1, -1, pos1)
+sim.setObjectPosition(bubbleRob2, -1, pos2)
+sim.setObjectOrientation(bubbleRob1, -1, ang1)
+sim.setObjectOrientation(bubbleRob2, -1, ang2)
+score3 = score3 + 1
+
+if (score3 &lt;= 9) then
+i = score3 +1
+for j = 0, 6, 1 do
+c = sim.getObject('./_R['..j..']')
+if (s[i][j+1] == 1) then
+sim.setShapeColor(c, nil, sim.colorcomponent_ambient_diffuse, {0, 1, 0})
+else
+sim.setShapeColor(c, nil, sim.colorcomponent_ambient_diffuse, {1, 1, 1})
+end
+end
+
+
+elseif (score3 &gt; 9 and score4&lt;=9) then
+score3 = 0
+for j = 0, 6, 1 do
+c = sim.getObject('./_R['..j..']')
+if (s[1][j+1] == 1) then
+sim.setShapeColor(c, nil, sim.colorcomponent_ambient_diffuse, {0, 1, 0})
+else
+sim.setShapeColor(c, nil, sim.colorcomponent_ambient_diffuse, {1, 1, 1})
+end
+end
+score4 = score4 + 1
+
+i = score4 +1
+for j = 0, 6, 1 do
+d = sim.getObject('./R_['..j..']')
+if (s[i][j+1] == 1) then
+sim.setShapeColor(d, nil, sim.colorcomponent_ambient_diffuse, {0, 1, 0})
+else
+sim.setShapeColor(d, nil, sim.colorcomponent_ambient_diffuse, {1, 1, 1})
+end
+end
+else
+sim.pauseSimulation()
+end
+end
+end
+</pre>
+<hr/>
+<p>問題區</p>
+<p>5/5加入第一版記分板</p>
+<p>問題1:第一版記分板顯示異常，每次進球後記分板，只會閃爍一格。</p>
+<p>問題2:車子進球門，也會計分。</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" src="https://www.youtube.com/embed/QQ8k-o1Lhpc" title="YouTube video player" width="560"></iframe></p>
+<p>5/11第二版記分板</p>
+<p>解決問題:第二版改善了第一版的顯示異常，能夠正常做動。</p>
+<p>保留問題:車子與球進球會計分，還沒改善。</p>
+<p><iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" frameborder="0" height="315" src="https://www.youtube.com/embed/QigwOlBsaVw" title="YouTube video player" width="560"></iframe></p>
+<br />About << <a href='About.html'>Previous</a> <a href='補充.html'>Next</a> >> 補充</div>
         
     <!-- footer -->
       <div class="container">
